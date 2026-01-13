@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import heroImage from "@assets/generated_images/portrait_of_a_friendly_young_pastor_named_kyle.png";
+import heroImage from "@assets/CRY05923_1_LW-X4-800x800_1768277415707.jpg";
 
 export default function About() {
   return (
