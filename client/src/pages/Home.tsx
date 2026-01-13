@@ -1,8 +1,8 @@
+import heroImage from "@assets/CRY05923_1_LW-X4-800x800_1768277415707.jpg";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { ArrowRight, Play, Users, Calendar, ChevronRight, Mail } from "lucide-react";
-import heroImage from "@assets/CRY05923_1_LW-X4-800x800_1768277415707.jpg";
+import { ArrowRight, Play, Users, Calendar, ChevronRight, Mail, BookOpen } from "lucide-react";
 
 export default function Home() {
   return (
@@ -13,17 +13,26 @@ export default function Home() {
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {["Sermons", "Devotionals", "Campus Ministry", "Book"].map((badge) => (
+                    <span key={badge} className="px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full">
+                      {badge}
+                    </span>
+                  ))}
+                </div>
                 <h1 className="text-3xl font-heading font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-primary">
-                  Faith, Community, <br />
-                  <span className="text-foreground">and Purpose.</span>
+                  Pastor Kyle Reynolds
                 </h1>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl font-light">
-                  Welcome to the ministry of Pastor Kyle Reynolds. Dedicated to sharing the gospel, building authentic community, and equipping the next generation.
+                <p className="text-xl font-heading text-foreground/80 font-medium">
+                  Scripture-centered teaching for college students and young adults.
+                </p>
+                <p className="max-w-[600px] text-muted-foreground md:text-lg font-light leading-relaxed">
+                  I help young adults build a durable faith in a loud world. Through sermons, devotionals, and campus ministry, my aim is simple: teach the Bible clearly, live it faithfully, and build community that lasts.
                 </p>
               </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
+              <div className="flex flex-col gap-2 min-[400px]:flex-row pt-4">
                 <Link href="/sermons">
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
+                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-lg">
                     <Play className="mr-2 h-4 w-4" /> Listen to Sermons
                   </Button>
                 </Link>
@@ -39,60 +48,54 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="relative rounded-2xl overflow-hidden shadow-2xl max-w-md w-full aspect-[3/4] lg:aspect-square"
+                className="relative rounded-2xl overflow-hidden shadow-2xl max-w-md w-full aspect-square"
               >
                 <img
                   src={heroImage}
                   alt="Pastor Kyle Reynolds"
                   className="object-cover w-full h-full"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
               </motion.div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Sermons Preview */}
+      {/* Start Here Section */}
       <section className="w-full py-16 md:py-24 bg-muted/30">
         <div className="container px-4 md:px-6 mx-auto">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-            <h2 className="text-3xl font-heading font-bold tracking-tighter sm:text-4xl text-primary">Latest Messages</h2>
-            <p className="max-w-[700px] text-muted-foreground md:text-lg">
-              Explore recent teachings from Sunday services and campus gatherings.
+          <div className="flex flex-col items-center justify-center space-y-4 text-center mb-16">
+            <h2 className="text-3xl font-heading font-bold tracking-tighter sm:text-4xl text-primary">Start Here</h2>
+            <p className="max-w-[800px] text-muted-foreground md:text-lg">
+              If you’re new, begin with a recent message, then take the next step toward community. Faith grows best when truth becomes practice and practice becomes shared life.
             </p>
           </div>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((i) => (
+          <div className="grid gap-8 md:grid-cols-3">
+            {[
+              { title: "Latest Sermon", text: "A practical message to help you take the next faithful step.", button: "Watch / Listen", icon: Play, href: "/sermons" },
+              { title: "Campus Ministry", text: "Find community with students and young adults who want to grow in Christ.", button: "Get Connected", icon: Users, href: "/campus" },
+              { title: "Devotionals", text: "Short Scripture-rooted reflections for real life and real decisions.", button: "Read the Blog", icon: BookOpen, href: "/blog" }
+            ].map((card, i) => (
               <motion.div 
                 key={i}
                 whileHover={{ y: -5 }}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-lg border bg-background shadow-sm hover:shadow-md transition-all"
+                className="group relative flex flex-col p-8 rounded-2xl border bg-background shadow-sm hover:shadow-md transition-all"
               >
-                <div className="aspect-video w-full bg-slate-200 relative">
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/5 group-hover:bg-black/10 transition-colors">
-                    <Play className="h-12 w-12 text-white opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all drop-shadow-lg" />
-                  </div>
+                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6">
+                  <card.icon className="h-6 w-6" />
                 </div>
-                <div className="p-6 flex flex-col gap-2">
-                  <div className="text-xs font-medium text-accent-foreground flex items-center gap-1">
-                    <Calendar className="h-3 w-3" /> January {10 + i}, 2025
-                  </div>
-                  <h3 className="text-xl font-bold font-heading group-hover:text-primary transition-colors">Finding Peace in Chaos</h3>
-                  <p className="text-muted-foreground text-sm line-clamp-2">
-                    In a world that never stops, how do we find true rest? Join us as we explore biblical principles for peace.
-                  </p>
-                  <Button variant="link" className="px-0 w-fit mt-2 text-primary">
-                    Watch Now <ArrowRight className="ml-1 h-4 w-4" />
+                <h3 className="text-xl font-bold font-heading mb-3">{card.title}</h3>
+                <p className="text-muted-foreground text-sm mb-6 flex-1">
+                  {card.text}
+                </p>
+                <Link href={card.href}>
+                  <Button variant="link" className="px-0 w-fit text-primary font-bold">
+                    {card.button} <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
-                </div>
+                </Link>
               </motion.div>
             ))}
-          </div>
-          <div className="flex justify-center mt-10">
-            <Link href="/sermons">
-              <Button variant="outline" className="border-primary text-primary hover:bg-primary/5">View All Sermons</Button>
-            </Link>
           </div>
         </div>
       </section>
@@ -101,17 +104,20 @@ export default function Home() {
       <section className="w-full py-16 md:py-24 bg-primary text-primary-foreground">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="grid gap-10 lg:grid-cols-2 items-center">
-            <div className="order-2 lg:order-1 space-y-4">
-              <h2 className="text-3xl font-heading font-bold tracking-tighter sm:text-4xl text-white">New Book Release</h2>
-              <p className="text-primary-foreground/90 md:text-lg max-w-[500px]">
-                "Walking in Faith" - A 40-day journey to deepen your trust in God and discover your true purpose.
+            <div className="order-2 lg:order-1 space-y-6">
+              <h2 className="text-3xl font-heading font-bold tracking-tighter sm:text-4xl text-white">Featured Book</h2>
+              <p className="text-primary-foreground/90 md:text-lg max-w-[500px] leading-relaxed">
+                A guide for young adults who want clarity, courage, and a faith that holds under pressure.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Link href="/book">
                   <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90 font-bold">
-                    Read More
+                    Learn More
                   </Button>
                 </Link>
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                  Buy the Book
+                </Button>
               </div>
             </div>
             <div className="order-1 lg:order-2 flex justify-center">
@@ -123,36 +129,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Connect/Campus Section */}
-      <section className="w-full py-16 md:py-24">
-        <div className="container px-4 md:px-6 mx-auto">
-          <div className="rounded-2xl bg-slate-50 border p-8 md:p-12 lg:p-16 text-center">
-            <h2 className="text-3xl font-heading font-bold mb-4 text-primary">Get Connected</h2>
-            <p className="max-w-2xl mx-auto text-muted-foreground mb-8 text-lg">
-              Life is better together. Whether you're a student looking for community or seeking spiritual mentorship, there's a place for you here.
-            </p>
-            <div className="grid gap-6 sm:grid-cols-2 max-w-2xl mx-auto">
-              <Link href="/campus">
-                <div className="group cursor-pointer rounded-xl border bg-background p-6 hover:border-primary hover:shadow-md transition-all text-left">
-                  <Users className="h-8 w-8 text-secondary mb-4 group-hover:scale-110 transition-transform" />
-                  <h3 className="font-heading font-bold text-lg mb-2">Campus Ministry</h3>
-                  <p className="text-sm text-muted-foreground">Join our weekly gatherings and small groups on campus.</p>
-                  <div className="mt-4 flex items-center text-primary text-sm font-medium">
-                    Learn more <ChevronRight className="ml-1 h-4 w-4" />
-                  </div>
-                </div>
-              </Link>
-              <Link href="/contact">
-                <div className="group cursor-pointer rounded-xl border bg-background p-6 hover:border-primary hover:shadow-md transition-all text-left">
-                  <Mail className="h-8 w-8 text-secondary mb-4 group-hover:scale-110 transition-transform" />
-                  <h3 className="font-heading font-bold text-lg mb-2">Contact Kyle</h3>
-                  <p className="text-sm text-muted-foreground">Have a question or prayer request? Reach out directly.</p>
-                  <div className="mt-4 flex items-center text-primary text-sm font-medium">
-                    Send message <ChevronRight className="ml-1 h-4 w-4" />
-                  </div>
-                </div>
-              </Link>
-            </div>
+      {/* Subscribe Section */}
+      <section className="w-full py-16 md:py-24 border-t">
+        <div className="container px-4 md:px-6 mx-auto text-center max-w-2xl">
+          <h2 className="text-3xl font-heading font-bold mb-4 text-primary">Monthly Updates</h2>
+          <p className="text-muted-foreground mb-8 text-lg">
+            Get sermon highlights, devotionals, and campus ministry updates once a month. No spam; unsubscribe anytime.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input 
+              type="email" 
+              placeholder="Enter your email" 
+              className="flex-1 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary/50"
+            />
+            <Button className="bg-primary hover:bg-primary/90 text-white font-bold">Subscribe</Button>
           </div>
         </div>
       </section>

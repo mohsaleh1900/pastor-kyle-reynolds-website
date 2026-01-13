@@ -10,8 +10,8 @@ const navItems = [
   { href: "/about", label: "About" },
   { href: "/sermons", label: "Sermons" },
   { href: "/blog", label: "Blog" },
+  { href: "/campus", label: "Campus Ministry" },
   { href: "/book", label: "Book" },
-  { href: "/campus", label: "Campus" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -99,9 +99,9 @@ export function Footer() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
-            <h3 className="font-heading text-lg font-bold text-primary mb-4">Kyle Reynolds</h3>
+            <h3 className="font-heading text-lg font-bold text-primary mb-4">Pastor Kyle Reynolds</h3>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Sharing the gospel, building community, and equipping the next generation of leaders.
+              Pastor Kyle Reynolds equips college students and young adults with Scripture-centered teaching, real community, and practical discipleship.
             </p>
           </div>
           
