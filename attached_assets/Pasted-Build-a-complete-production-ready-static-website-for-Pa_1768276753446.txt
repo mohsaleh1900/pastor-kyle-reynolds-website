@@ -1,0 +1,77 @@
+Build a complete, production-ready static website for “Pastor Kyle Reynolds” using HTML/CSS/JavaScript (no frameworks). Create a multi-page site with a clean, modern, pastoral design suitable for young adults and campus ministry.
+
+SITE GOALS
+- Present Kyle’s identity + mission clearly
+- Share sermons/messages (YouTube embeds and/or links)
+- Publish devotionals/blog posts
+- Promote a book (placeholder now)
+- Provide clear ways to connect (contact + “Join a Group” form)
+- Mobile-first, fast, and accessible
+
+PAGES (separate HTML files)
+1) index.html (Home)
+2) about.html
+3) sermons.html
+4) blog.html
+5) book.html
+6) campus.html (Campus Ministry / Outreach)
+7) contact.html
+
+CONTENT (use temporary placeholder text and sample items; I will replace later)
+- Home hero headline, subtitle, and two CTAs: “Listen to Sermons” + “Join a Group”
+- Sermons page: a grid/list of at least 6 sample sermons with title, date, short summary, and a “Watch” button (YouTube embed links can be placeholders)
+- Blog page: at least 6 sample posts with categories (Devotional, Teaching, Campus) and excerpts; clicking opens a post template page or modal
+- Book page: placeholder cover block + description + purchase buttons (Amazon placeholder)
+- Campus page: short mission statement + meeting info placeholders + “Get Connected” form
+- Contact page: name/email/message form
+
+DESIGN SYSTEM
+- Fonts: Montserrat for headings; Lato for body (use Google Fonts)
+- Colors:
+  - Primary blue: #2B6CB0
+  - Dark blue: #1A4F7A
+  - Teal accent: #2C7A7B
+  - Mint highlight: #81E6D9
+  - Deep navy background: #0F172A
+  - Text: #1A202C
+  - Muted text: #4A5568
+  - Light border: #E2E8F0
+  - White: #FFFFFF
+- Style: modern, clean, warm; card-based sections; rounded corners; subtle shadows; tasteful hover states
+- Layout: max content width ~1120px; generous section padding; clear typography hierarchy
+
+FEATURES / BEHAVIOR
+- Responsive navigation with hamburger menu on mobile
+- Sticky header
+- Smooth scroll for on-page anchors
+- Sermon cards + blog cards with hover lift
+- Simple category filter for blog posts (client-side JS)
+- Forms: front-end validation + success message (no backend required)
+- Basic SEO: meta title/description per page + Open Graph placeholders
+- Accessibility: semantic HTML, proper contrast, focus states, alt text placeholders
+
+ASSETS
+- Use a local image at /assets/images/Kyle.jpg as the hero portrait on the Home page (right side of hero on desktop; stacked on mobile).
+- Add placeholder images for gallery/cards as needed (simple gradients are fine).
+
+PROJECT STRUCTURE
+/ (root)
+  index.html
+  about.html
+  sermons.html
+  blog.html
+  book.html
+  campus.html
+  contact.html
+/assets
+  /css/styles.css
+  /js/main.js
+  /images/Kyle.jpg (assume exists; reference it)
+  /data/sermons.json
+  /data/posts.json
+
+DELIVERABLES
+- Generate all files in the project structure.
+- Ensure links between pages work.
+- Ensure everything runs by opening index.html (no build step).
+- Provide brief instructions at the top of README.md on how to run locally and how to deploy (Netlify/Replit hosting).
