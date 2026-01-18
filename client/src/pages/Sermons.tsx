@@ -18,6 +18,7 @@ export default function Sermons() {
     async function load() {
       try {
         const res = await fetch("/api/sermons");
+        if (!res.ok) throw new Error("Failed to load sermons");
         const data = await res.json();
         setSermons(data.sermons ?? []);
       } catch {
@@ -51,14 +52,14 @@ export default function Sermons() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {sermons.map((sermon, i) => (
               <div
-                key={i}
+                key={sermon.url}
                 className="group bg-background rounded-2xl border overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col"
               >
                 <div className="aspect-video bg-slate-900/5 relative">
                   {sermon.thumbnail ? (
                     <img
                       src={sermon.thumbnail}
-                      alt=""
+                      alt={sermon.title}
                       className="absolute inset-0 w-full h-full object-cover"
                       loading="lazy"
                     />

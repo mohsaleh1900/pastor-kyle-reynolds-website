@@ -40,7 +40,7 @@ export async function registerRoutes(
       }
 
       const TARGET_COUNT = 10;
-      const MAX_PAGES = 6;   // 6 pages * 50 = scan up to 300 videos max
+      const MAX_PAGES = 20;   // 20 pages * 50 = scan up to 1000 videos max
       const MAX_RESULTS = 50;
 
       let pageToken = "";
