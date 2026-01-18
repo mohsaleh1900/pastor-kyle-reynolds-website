@@ -6,8 +6,7 @@ import { storage } from "./storage";
 const YT_CHANNEL_ID = "UCVWrFKtcGFvZk3imn85pxvg";
 
 // Filter to Kyle's sermons based on title text
-const KYLE_TITLE_REGEX =
-  /\b(kyle\s+reynolds|pastor\s+kyle\s+reynolds|ps\.?\s*kyle\s+reynolds)\b/i;
+const KYLE_TITLE_REGEX = /kyle\s*reynolds/i;
 
 function formatMonthYear(iso: string) {
   const d = new Date(iso);
@@ -43,7 +42,7 @@ export async function registerRoutes(
       const url =
         "https://www.googleapis.com/youtube/v3/search" +
         `?part=snippet&channelId=${YT_CHANNEL_ID}` +
-        `&maxResults=30&order=date&type=video&key=${apiKey}`;
+        `&maxResults=50&order=date&type=video&key=${apiKey}`;
 
       const r = await fetch(url);
       if (!r.ok) {
@@ -78,8 +77,7 @@ export async function registerRoutes(
           };
         })
         .filter(Boolean)
-        // TEMP: return recent channel videos without filtering so we can see title format
-        // .filter((s: any) => KYLE_TITLE_REGEX.test(s.title));
+        .filter((s: any) => KYLE_TITLE_REGEX.test(s.title));
 
       const top = sermons.slice(0, 10);
       sermonsCache = { at: Date.now(), data: top };
