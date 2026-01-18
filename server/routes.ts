@@ -78,7 +78,12 @@ export async function registerRoutes(
           };
         })
         .filter(Boolean)
-        .filter((s: any) => KYLE_TITLE_REGEX.test(s.title));
+        // TEMP: return recent channel videos without filtering so we can see title format
+        // .filter((s: any) => KYLE_TITLE_REGEX.test(s.title));
+
+      const top = sermons.slice(0, 10);
+      sermonsCache = { at: Date.now(), data: top };
+      return res.json({ sermons: top });
 
       sermonsCache = { at: Date.now(), data: sermons };
 
