@@ -10,6 +10,31 @@ type Sermon = {
   thumbnail: string;
 };
 
+function cleanSermonTitle(raw: string) {
+  let t = raw || "";
+
+  // Fix cases like "Kyle Reynolds12.28.2025" -> "Kyle Reynolds|12.28.2025"
+  t = t.replace(/(kyle\s*reynolds)\s*(\d{1,2}\.\d{1,2}\.\d{4})/i, "$1|$2");
+  t = t.replace(/pastorkyle\s*reynolds/i, "Pastor Kyle Reynolds");
+
+  // Remove leading numbering like "5. "
+  t = t.replace(/^\s*\d+\.\s*/, "");
+
+  // Split and remove preacher/date segments
+  const parts = t
+    .split("|")
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  const preacher = (p: string) =>
+    /kyle\s*reynolds/i.test(p) || /pastor\s*kyle\s*reynolds/i.test(p);
+  const date = (p: string) => /^\d{1,2}\.\d{1,2}\.\d{4}$/.test(p);
+
+  const cleaned = parts.filter((p) => !preacher(p) && !date(p));
+
+  return cleaned.length ? cleaned.join(" | ") : t;
+}
+
 export default function Sermons() {
   const [sermons, setSermons] = useState<Sermon[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,12 +63,16 @@ export default function Sermons() {
             Sermons & Messages
           </h1>
           <p className="text-xl text-muted-foreground">
-            These messages aim to teach Scripture clearly and apply it directly to real life; faith, identity, relationships, purpose, and endurance.
+            These messages aim to teach Scripture clearly and apply it directly
+            to real life; faith, identity, relationships, purpose, and
+            endurance.
           </p>
         </div>
 
         {loading ? (
-          <div className="text-center text-muted-foreground">Loading sermons…</div>
+          <div className="text-center text-muted-foreground">
+            Loading sermons…
+          </div>
         ) : sermons.length === 0 ? (
           <div className="text-center text-muted-foreground">
             No sermons found yet.
@@ -82,15 +111,22 @@ export default function Sermons() {
                   </div>
 
                   <h3 className="text-xl font-heading font-bold mb-4 leading-tight group-hover:text-primary transition-colors">
-                    {sermon.title}
+                    {cleanSermonTitle(sermon.title)}
                   </h3>
 
                   <p className="text-muted-foreground text-sm leading-relaxed mb-8 flex-1">
                     {sermon.summary || "Watch the full message on YouTube."}
                   </p>
 
-                  <Button asChild className="bg-primary hover:bg-primary/90 text-white font-bold">
-                    <a href={sermon.url} target="_blank" rel="noopener noreferrer">
+                  <Button
+                    asChild
+                    className="bg-primary hover:bg-primary/90 text-white font-bold"
+                  >
+                    <a
+                      href={sermon.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Watch Message
                     </a>
                   </Button>

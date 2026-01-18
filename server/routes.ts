@@ -16,7 +16,7 @@ function formatMonthYear(iso: string) {
 
 // Simple in-memory cache to reduce API calls (helps quota + speed)
 let sermonsCache: { at: number; data: any[] } | null = null;
-const CACHE_MS = 15 * 60 * 1000; // 15 minutes
+const CACHE_MS = 60 * 60 * 1000; // 60 minutes
 
 export async function registerRoutes(
   httpServer: Server,
@@ -99,6 +99,7 @@ export async function registerRoutes(
 
       const top = collected.slice(0, TARGET_COUNT);
       sermonsCache = { at: Date.now(), data: top };
+      res.set("Cache-Control", "public, max-age=3600");
       return res.json({ sermons: top });
 
     } catch (e: any) {
