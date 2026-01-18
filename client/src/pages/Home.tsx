@@ -27,7 +27,7 @@ export default function Home() {
                   Scripture-centered teaching for college students and young adults.
                 </p>
                 <p className="max-w-[600px] text-muted-foreground md:text-lg font-light leading-relaxed">
-                  I help young adults build a durable faith in a loud world. Through sermons, devotionals, and campus ministry, my aim is simple: teach the Bible clearly, live it faithfully, and build community that lasts.
+                  My aim is to help young adults build a durable, lifelong faith in a multi-faceted world competing for our attention. Through sermons, devotionals and campus ministry, my aim is simple: teach the Bible clearly, live it out faithfully, and build a lasting community of Christian disciples who urgently share the Gospel with others.
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row pt-4">
