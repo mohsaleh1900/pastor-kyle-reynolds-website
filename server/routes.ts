@@ -39,53 +39,68 @@ export async function registerRoutes(
         return res.json({ sermons: sermonsCache.data });
       }
 
-      const url =
-        "https://www.googleapis.com/youtube/v3/search" +
-        `?part=snippet&channelId=${YT_CHANNEL_ID}` +
-        `&maxResults=50&order=date&type=video&key=${apiKey}`;
+      const TARGET_COUNT = 10;
+      const MAX_PAGES = 6;   // 6 pages * 50 = scan up to 300 videos max
+      const MAX_RESULTS = 50;
 
-      const r = await fetch(url);
-      if (!r.ok) {
-        const text = await r.text();
-        return res
-          .status(r.status)
-          .json({ error: "YouTube API error", details: text });
+      let pageToken = "";
+      const collected: any[] = [];
+
+      for (let page = 0; page < MAX_PAGES; page++) {
+        const url =
+          "https://www.googleapis.com/youtube/v3/search" +
+          `?part=snippet&channelId=${YT_CHANNEL_ID}` +
+          `&maxResults=${MAX_RESULTS}&order=date&type=video` +
+          (pageToken ? `&pageToken=${pageToken}` : "") +
+          `&key=${apiKey}`;
+
+        const r = await fetch(url);
+        if (!r.ok) {
+          const text = await r.text();
+          return res
+            .status(r.status)
+            .json({ error: "YouTube API error", details: text });
+        }
+
+        const data: any = await r.json();
+
+        const matches = (data.items ?? [])
+          .map((item: any) => {
+            const videoId = item?.id?.videoId;
+            const snippet = item?.snippet;
+            if (!videoId || !snippet) return null;
+
+            const title = String(snippet.title ?? "");
+            const publishedAt = String(snippet.publishedAt ?? "");
+            const description = String(snippet.description ?? "");
+
+            return {
+              title,
+              date: publishedAt ? formatMonthYear(publishedAt) : "",
+              summary: description.slice(0, 180),
+              url: `https://www.youtube.com/watch?v=${videoId}`,
+              thumbnail:
+                snippet?.thumbnails?.high?.url ||
+                snippet?.thumbnails?.medium?.url ||
+                snippet?.thumbnails?.default?.url ||
+                "",
+            };
+          })
+          .filter(Boolean)
+          .filter((s: any) => KYLE_TITLE_REGEX.test(s.title));
+
+        collected.push(...matches);
+
+        if (collected.length >= TARGET_COUNT) break;
+
+        pageToken = data.nextPageToken;
+        if (!pageToken) break;
       }
 
-      const data: any = await r.json();
-
-      const sermons = (data.items ?? [])
-        .map((item: any) => {
-          const videoId = item?.id?.videoId;
-          const snippet = item?.snippet;
-          if (!videoId || !snippet) return null;
-
-          const title = String(snippet.title ?? "");
-          const publishedAt = String(snippet.publishedAt ?? "");
-          const description = String(snippet.description ?? "");
-
-          return {
-            title,
-            date: publishedAt ? formatMonthYear(publishedAt) : "",
-            summary: description.slice(0, 180),
-            url: `https://www.youtube.com/watch?v=${videoId}`,
-            thumbnail:
-              snippet?.thumbnails?.high?.url ||
-              snippet?.thumbnails?.medium?.url ||
-              snippet?.thumbnails?.default?.url ||
-              "",
-          };
-        })
-        .filter(Boolean)
-        .filter((s: any) => KYLE_TITLE_REGEX.test(s.title));
-
-      const top = sermons.slice(0, 10);
+      const top = collected.slice(0, TARGET_COUNT);
       sermonsCache = { at: Date.now(), data: top };
       return res.json({ sermons: top });
 
-      sermonsCache = { at: Date.now(), data: sermons };
-
-      return res.json({ sermons });
     } catch (e: any) {
       return res.status(500).json({
         error: "Failed to load sermons",
