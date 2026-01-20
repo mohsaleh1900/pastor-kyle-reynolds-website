@@ -71,22 +71,18 @@ export default function Home() {
             </div>
             <div className="flex items-center justify-center lg:justify-end">
               <motion.div
-                initial={{ opacity: 0, y: 10, rotate: 3 }}
-                whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-                viewport={{ once: true }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="relative w-48 sm:w-56 md:w-64 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/20"
+                className="relative rounded-2xl overflow-hidden shadow-2xl max-w-md w-full aspect-square"
               >
                 <img
-                  src="/books/dont-quit-cover.jpg"
-                  alt="Don't Quit book cover"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
+                  src={heroImage}
+                  alt="Pastor Kyle Reynolds"
+                  className="object-cover w-full h-full"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
               </motion.div>
-
-
             </div>
           </div>
         </div>
