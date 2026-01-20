@@ -71,18 +71,22 @@ export default function Home() {
             </div>
             <div className="flex items-center justify-center lg:justify-end">
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 10, rotate: 3 }}
+                whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="relative rounded-2xl overflow-hidden shadow-2xl max-w-md w-full aspect-square"
+                className="relative w-48 sm:w-56 md:w-64 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/20"
               >
                 <img
-                  src={heroImage}
-                  alt="Pastor Kyle Reynolds"
-                  className="object-cover w-full h-full"
+                  src="/books/dont-quit-cover.jpg"
+                  alt="Don't Quit book cover"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
               </motion.div>
+
+
             </div>
           </div>
         </div>
@@ -161,10 +165,11 @@ export default function Home() {
               <h2 className="text-3xl font-heading font-bold tracking-tighter sm:text-4xl text-white">
                 Featured Book
               </h2>
+
               <p className="text-primary-foreground/90 md:text-lg max-w-[500px] leading-relaxed">
-                A guide for young adults who want clarity, courage, and a faith
-                that holds under pressure.
+                A guide for young adults who want clarity, courage, and a faith that holds under pressure.
               </p>
+
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Link href="/book">
                   <Button
@@ -175,15 +180,24 @@ export default function Home() {
                     Learn More
                   </Button>
                 </Link>
+
                 <Button
+                  asChild
                   size="lg"
                   variant="outline"
                   className="border-white text-white hover:bg-white/10"
                 >
-                  Buy the Book
+                  <a
+                    href="https://www.amazon.com/Dont-Quit-Jason-Merkle-Story/dp/1973668955"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Buy the Book
+                  </a>
                 </Button>
               </div>
             </div>
+
             <div className="order-1 lg:order-2 flex justify-center">
               <motion.div
                 initial={{ opacity: 0, y: 10, rotate: 3 }}
@@ -192,13 +206,21 @@ export default function Home() {
                 transition={{ duration: 0.5 }}
                 className="relative w-48 sm:w-56 md:w-64 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/20"
               >
-                <img
-                  src="/books/dont-quit-cover.jpg"
-                  alt="Don't Quit book cover"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                <a
+                  href="https://www.amazon.com/Dont-Quit-Jason-Merkle-Story/dp/1973668955"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full h-full"
+                  aria-label="Buy Don’t Quit on Amazon"
+                >
+                  <img
+                    src="/books/dont-quit-cover.jpg"
+                    alt="Don’t Quit book cover"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                </a>
               </motion.div>
             </div>
           </div>
