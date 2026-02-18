@@ -2,54 +2,31 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ArrowRight, Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
-const posts = [
-  {
-    title: "Faith Under Pressure",
-    date: "Jan 2026",
-    category: "Teaching",
-    excerpt: "Pressure does not create your identity; it reveals what you trust—and what you need to rebuild."
-  },
-  {
-    title: "A Quiet Rule for a Noisy Week",
-    date: "Dec 2025",
-    category: "Devotional",
-    excerpt: "One small rhythm of Scripture and prayer can re-center an entire week."
-  },
-  {
-    title: "When You Don’t Feel Close to God",
-    date: "Dec 2025",
-    category: "Devotional",
-    excerpt: "Closeness is not always a feeling; it is often the fruit of faithfulness."
-  },
-  {
-    title: "Dating, Discernment, and Integrity",
-    date: "Nov 2025",
-    category: "Teaching",
-    excerpt: "A framework for wise choices that honors Christ and protects your future self."
-  },
-  {
-    title: "Why Community Matters More Than You Think",
-    date: "Oct 2025",
-    category: "Campus",
-    excerpt: "You don’t drift into maturity; you grow through relationships and consistency."
-  },
-  {
-    title: "What to Do When You’re Spiritually Tired",
-    date: "Sep 2025",
-    category: "Devotional",
-    excerpt: "A practical reset: rest, truth, prayer, and one obedient step."
-  }
-];
+type BlogPost = {
+  id: number;
+  title: string;
+  date: string;
+  category: string;
+  excerpt: string;
+  content: string | null;
+};
 
 const categories = ["All", "Devotional", "Teaching", "Campus"];
 
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [selectedPost, setSelectedPost] = useState<typeof posts[0] | null>(null);
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
 
-  const filteredPosts = activeCategory === "All" 
-    ? posts 
+  const { data, isLoading } = useQuery<{ posts: BlogPost[] }>({
+    queryKey: ["/api/blog"],
+  });
+
+  const posts = data?.posts ?? [];
+  const filteredPosts = activeCategory === "All"
+    ? posts
     : posts.filter(post => post.category === activeCategory);
 
   return (
@@ -62,7 +39,6 @@ export default function Blog() {
           </p>
         </div>
 
-        {/* Category Filter */}
         <div className="flex flex-wrap justify-center gap-2 mb-16">
           {categories.map((cat) => (
             <Button
@@ -76,31 +52,42 @@ export default function Blog() {
           ))}
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {filteredPosts.map((post, i) => (
-            <div 
-              key={i} 
-              onClick={() => setSelectedPost(post)}
-              className="group cursor-pointer rounded-2xl border bg-card text-card-foreground shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-8 flex flex-col h-full"
-            >
-              <div className="flex justify-between items-start mb-6">
-                <Badge variant="secondary" className="bg-secondary/10 text-secondary border-none px-3 py-1">
-                  {post.category}
-                </Badge>
-                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{post.date}</span>
+        {isLoading ? (
+          <div className="flex justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : filteredPosts.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground">
+            <p>No posts found in this category yet.</p>
+          </div>
+        ) : (
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {filteredPosts.map((post) => (
+              <div
+                key={post.id}
+                onClick={() => setSelectedPost(post)}
+                className="group cursor-pointer rounded-2xl border bg-card text-card-foreground shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-8 flex flex-col h-full"
+                data-testid={`card-blog-${post.id}`}
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <Badge variant="secondary" className="bg-secondary/10 text-secondary border-none px-3 py-1">
+                    {post.category}
+                  </Badge>
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{post.date}</span>
+                </div>
+                <h3 className="text-xl font-heading font-bold mb-4 leading-tight group-hover:text-primary transition-colors">
+                  {post.title}
+                </h3>
+                <p className="text-muted-foreground leading-relaxed mb-6 line-clamp-3 flex-1">
+                  {post.excerpt}
+                </p>
+                <div className="text-primary font-bold text-sm mt-auto flex items-center gap-2">
+                  Read Article <ArrowRight className="h-4 w-4" />
+                </div>
               </div>
-              <h3 className="text-xl font-heading font-bold mb-4 leading-tight group-hover:text-primary transition-colors">
-                {post.title}
-              </h3>
-              <p className="text-muted-foreground leading-relaxed mb-6 line-clamp-3 flex-1">
-                {post.excerpt}
-              </p>
-              <div className="text-primary font-bold text-sm mt-auto flex items-center gap-2">
-                Read Article <ArrowRight className="h-4 w-4" />
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <Dialog open={!!selectedPost} onOpenChange={(open) => !open && setSelectedPost(null)}>
           <DialogContent className="sm:max-w-[600px]">
@@ -115,11 +102,13 @@ export default function Blog() {
             </DialogHeader>
             <div className="mt-6 prose prose-slate">
               <p className="text-lg leading-relaxed text-foreground/80">
-                {selectedPost?.excerpt}
+                {selectedPost?.content || selectedPost?.excerpt}
               </p>
-              <div className="mt-8 p-6 bg-muted/30 rounded-xl text-sm text-muted-foreground border italic">
-                (Full article content coming soon.)
-              </div>
+              {!selectedPost?.content && (
+                <div className="mt-8 p-6 bg-muted/30 rounded-xl text-sm text-muted-foreground border italic">
+                  (Full article content coming soon.)
+                </div>
+              )}
             </div>
           </DialogContent>
         </Dialog>
@@ -127,5 +116,3 @@ export default function Blog() {
     </div>
   );
 }
-
-import { ArrowRight } from "lucide-react";

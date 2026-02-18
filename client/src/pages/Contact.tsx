@@ -7,6 +7,8 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, MessageSquare } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -18,21 +20,22 @@ export default function Contact() {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      message: "",
-    },
+    defaultValues: { name: "", email: "", message: "" },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for reaching out. I'll get back to you as soon as possible.",
-    });
-    form.reset();
-  }
+  const mutation = useMutation({
+    mutationFn: async (values: z.infer<typeof formSchema>) => {
+      const res = await apiRequest("POST", "/api/contact", values);
+      return res.json();
+    },
+    onSuccess: (data) => {
+      toast({ title: "Message Sent!", description: data.message });
+      form.reset();
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
+    },
+  });
 
   return (
     <div className="w-full py-12 md:py-24">
@@ -45,7 +48,6 @@ export default function Contact() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16 items-start">
-          
           <div className="space-y-12">
             <div className="p-8 rounded-2xl bg-slate-50 border border-primary/5">
               <div className="flex gap-4 items-center mb-4">
@@ -58,7 +60,6 @@ export default function Contact() {
                 For speaking or preaching requests, include the event date, location, audience, and topic idea.
               </p>
             </div>
-
             <div className="flex items-center gap-4 text-primary">
               <Mail className="h-6 w-6" />
               <span className="text-lg font-medium">hello@kyle.com</span>
@@ -67,57 +68,34 @@ export default function Contact() {
 
           <div className="bg-card border rounded-2xl p-8 shadow-xl shadow-primary/5">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold">Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your name" className="rounded-lg h-12" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold">Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your email" className="rounded-lg h-12" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold">Message</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="How can I help you?" 
-                          className="min-h-[150px] rounded-lg"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" size="lg" className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12">
-                  Send Message
+              <form onSubmit={form.handleSubmit((v) => mutation.mutate(v))} className="space-y-6">
+                <FormField control={form.control} name="name" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-bold">Name</FormLabel>
+                    <FormControl><Input placeholder="Your name" className="rounded-lg h-12" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="email" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-bold">Email</FormLabel>
+                    <FormControl><Input placeholder="Your email" className="rounded-lg h-12" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="message" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-bold">Message</FormLabel>
+                    <FormControl><Textarea placeholder="How can I help you?" className="min-h-[150px] rounded-lg" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <Button type="submit" size="lg" className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12" disabled={mutation.isPending}>
+                  {mutation.isPending ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </Form>
           </div>
-
         </div>
       </div>
     </div>

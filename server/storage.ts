@@ -1,38 +1,51 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { eq } from "drizzle-orm";
+import pg from "pg";
+import {
+  blogPosts, type InsertBlogPost, type BlogPost,
+  contactSubmissions, type InsertContact, type ContactSubmission,
+  campusSignups, type InsertCampusSignup, type CampusSignup,
+  newsletterSubscriptions, type InsertNewsletter, type NewsletterSubscription,
+} from "@shared/schema";
 
-// modify the interface with any CRUD methods
-// you might need
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+export const db = drizzle(pool);
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getBlogPosts(): Promise<BlogPost[]>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  createContactSubmission(submission: InsertContact): Promise<ContactSubmission>;
+  createCampusSignup(signup: InsertCampusSignup): Promise<CampusSignup>;
+  createNewsletterSubscription(sub: InsertNewsletter): Promise<NewsletterSubscription>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  async getBlogPosts(): Promise<BlogPost[]> {
+    return await db.select().from(blogPosts);
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const [result] = await db.insert(blogPosts).values(post).returning();
+    return result;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async createContactSubmission(submission: InsertContact): Promise<ContactSubmission> {
+    const [result] = await db.insert(contactSubmissions).values(submission).returning();
+    return result;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async createCampusSignup(signup: InsertCampusSignup): Promise<CampusSignup> {
+    const [result] = await db.insert(campusSignups).values(signup).returning();
+    return result;
+  }
+
+  async createNewsletterSubscription(sub: InsertNewsletter): Promise<NewsletterSubscription> {
+    const [result] = await db.insert(newsletterSubscriptions).values(sub).returning();
+    return result;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
