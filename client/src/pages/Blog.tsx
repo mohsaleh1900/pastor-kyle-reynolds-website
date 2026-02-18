@@ -35,7 +35,7 @@ export default function Blog() {
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h1 className="text-4xl font-heading font-bold text-primary mb-4">Blog & Devotionals</h1>
           <p className="text-xl text-muted-foreground">
-            Short reflections to help you think clearly, live faithfully, and take the next step
+            Short reflections to help you think clearly, live faithfully, and take the next step.
           </p>
         </div>
 
