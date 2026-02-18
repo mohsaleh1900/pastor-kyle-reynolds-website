@@ -34,7 +34,7 @@ export default function About() {
             <div className="p-8 bg-slate-50 rounded-2xl border border-primary/10">
               <h2 className="text-2xl font-heading font-bold text-primary mb-4">Mission</h2>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                To help young adults know Christ, love the Church, and live out a steady faith through Scripture, community, and practical obedience.
+                To help young adults know Christ, love the Church, and live out a steady faith through Scripture, community, and practical obedience
               </p>
             </div>
 
