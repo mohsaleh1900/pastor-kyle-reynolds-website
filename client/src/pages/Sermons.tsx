@@ -46,9 +46,10 @@ export default function Sermons() {
         if (!res.ok) throw new Error("Failed to load sermons");
         const data = await res.json();
         setSermons(data.sermons ?? []);
-      } catch {
-        setSermons([]);
-      } finally {
+        } catch (e) {
+          console.error("Failed to load sermons:", e);
+          setSermons([]);
+        } finally {
         setLoading(false);
       }
     }
