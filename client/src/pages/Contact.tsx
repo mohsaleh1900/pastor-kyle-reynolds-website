@@ -50,8 +50,7 @@ export default function Contact() {
             <div className="w-full overflow-hidden rounded-xl">
               <iframe
                 src="https://docs.google.com/forms/d/e/1FAIpQLSfQlW2bVBgkj4-XrbzKA6caWeJLo2Q1PbLrO4r27tJiyqs1uQ/viewform?embedded=true"
-                className="w-full"
-                height="1100"
+                className="w-full h-[1400px] md:h-[1600px] lg:h-[1800px]"
                 frameBorder="0"
                 marginHeight={0}
                 marginWidth={0}
