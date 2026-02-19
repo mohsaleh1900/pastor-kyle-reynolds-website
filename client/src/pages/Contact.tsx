@@ -1,79 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
 import { Mail, MessageSquare } from "lucide-react";
-import { useState } from "react";
-
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-});
-
-// Netlify expects urlencoded form data
-function encodeForm(data: Record<string, string>) {
-  return new URLSearchParams(data).toString();
-}
 
 export default function Contact() {
-  const { toast } = useToast();
-  const [submitting, setSubmitting] = useState(false);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { name: "", email: "", message: "" },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setSubmitting(true);
-
-      // IMPORTANT:
-      // "contact" must match the form name and the hidden form-name field
-      const body = encodeForm({
-        "form-name": "contact",
-        name: values.name,
-        email: values.email,
-        message: values.message,
-      });
-
-      const res = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body,
-      });
-
-      if (!res.ok) throw new Error("Failed to submit");
-
-      toast({
-        title: "Message Sent!",
-        description: "Thanks — Kyle will get back to you soon.",
-      });
-
-      form.reset();
-    } catch (e) {
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
   return (
     <div className="w-full py-12 md:py-24">
       <div className="container px-4 md:px-6 mx-auto">
@@ -88,6 +15,8 @@ export default function Contact() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16 items-start">
+
+          {/* LEFT COLUMN */}
           <div className="space-y-12">
             <div className="p-8 rounded-2xl bg-slate-50 border border-primary/5">
               <div className="flex gap-4 items-center mb-4">
@@ -104,105 +33,46 @@ export default function Contact() {
               </p>
             </div>
 
-            <div className="flex items-center gap-4 text-primary">
+            <a
+              href="mailto:kylereynolds@kenwoodbaptist.org"
+              className="flex items-center gap-4 text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-md"
+              aria-label="Email Kyle Reynolds"
+            >
               <Mail className="h-6 w-6" />
-              <span className="text-lg font-medium">hello@kyle.com</span>
+              <span className="text-lg font-medium">
+                kylereynolds@kenwoodbaptist.org
+              </span>
+            </a>
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="bg-card border rounded-2xl p-8 shadow-xl shadow-primary/5">
+            <div className="w-full overflow-hidden rounded-xl">
+              <iframe
+                src="https://docs.google.com/forms/d/e/1FAIpQLSfQlW2bVBgkj4-XrbzKA6caWeJLo2Q1PbLrO4r27tJiyqs1uQ/viewform?embedded=true"
+                className="w-full"
+                height="1100"
+                frameBorder="0"
+                marginHeight={0}
+                marginWidth={0}
+              >
+                Loading…
+              </iframe>
+
+              <p className="text-sm text-muted-foreground mt-4">
+                Having trouble viewing the form?{" "}
+                <a
+                  className="underline text-primary"
+                  href="https://docs.google.com/forms/d/e/1FAIpQLSfQlW2bVBgkj4-XrbzKA6caWeJLo2Q1PbLrO4r27tJiyqs1uQ/viewform"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open it in a new tab.
+                </a>
+              </p>
             </div>
           </div>
 
-          <div className="bg-card border rounded-2xl p-8 shadow-xl shadow-primary/5">
-            <Form {...form}>
-              {/* Netlify Forms requirements:
-                  1) name="contact"
-                  2) method="POST"
-                  3) data-netlify="true"
-                  4) hidden input form-name="contact"
-                  5) honeypot field (optional but recommended)
-               */}
-              <form
-                name="contact"
-                method="POST"
-                data-netlify="true"
-                data-netlify-honeypot="bot-field"
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
-                <input type="hidden" name="form-name" value="contact" />
-                <p className="hidden">
-                  <label>
-                    Don’t fill this out if you’re human:{" "}
-                    <input name="bot-field" />
-                  </label>
-                </p>
-
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold">Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Your name"
-                          className="rounded-lg h-12"
-                          {...field}
-                          name="name"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold">Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Your email"
-                          className="rounded-lg h-12"
-                          {...field}
-                          name="email"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold">Message</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="How can I help you?"
-                          className="min-h-[150px] rounded-lg"
-                          {...field}
-                          name="message"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12"
-                  disabled={submitting}
-                >
-                  {submitting ? "Sending..." : "Send Message"}
-                </Button>
-              </form>
-            </Form>
-          </div>
         </div>
       </div>
     </div>
